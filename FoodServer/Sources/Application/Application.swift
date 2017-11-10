@@ -13,6 +13,7 @@ public let health = Health()
 
 public class Meals : Table {
     let tableName = "meals"
+    let key = Column("key")
     let name = Column("name")
     let photo = Column("photo")
     let rating = Column("rating")
@@ -40,9 +41,32 @@ public class App {
         router.get("/meals", handler: loadHandler)
     }
     
-    func storeHandler(meal: Meal, completion: (Meal?, RequestError?) -> Void ) -> Void {
-        mealStore[meal.name] = meal
-        completion(mealStore[meal.name], nil)
+    func storeHandler(meal: Meal, completion: @escaping (Meal?, RequestError?) -> Void ) -> Void {
+        connection.connect() { error in
+            if let error = error {
+                print("Error is \(error)")
+                return
+            }
+            else {
+                let key = String(arc4random())
+                let updateQuery = Update(meals, set: [(meals.key, key), (meals.name, meal.name), (meals.photo, "test"),(meals.rating, meal.rating)]).where(meals.name == meal.name)
+                print("meals: \(meals.name) + \(meal.name)")
+                    connection.execute(query: updateQuery) { result in
+                        print("update result: \(String(describing: result))")
+                            let insertQuery = Insert(into: self.meals, values: [key, meal.name, "test", meal.rating])
+                            self.connection.execute(query: insertQuery) { result in
+                                print("insert result: \(result.success)")
+                                if(!result.success){
+                                    completion(nil, .unprocessableEntity)
+                                    return
+                                }
+                                print("inserted to table")
+                            }
+                        
+            }
+        completion(meal, nil)
+            }
+        }
     }
     
     func loadHandler(completion: @escaping ([Meal]?, RequestError?) -> Void ) -> Void {
