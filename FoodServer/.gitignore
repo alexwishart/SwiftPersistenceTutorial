@@ -5,3 +5,8 @@
 /config.json
 /spec.json
 ./config/localdev-config.json
+.build/*
+.build-ubuntu/*
+*.xcodeproj/*
+Package.resolved
+.DS_Store
