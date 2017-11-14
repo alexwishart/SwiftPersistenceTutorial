@@ -128,46 +128,146 @@ below the line `let meals = Meals()`
 2. inside your storeHandler and loadHandler functions create a connection to the database:
 ```
 connection.connect() { error in
-if let error = error {
-return
+    if error != nil {return}
+    else {
+    // Build and execute your query here.
+    }
 }
+```
+on the lines below "func loadHandler(...{"  and "func storeHandler(...{"
+
+3. make loadHandler and storeHandler functions escape since they can return early
+```
+func storeHandler(meal: Meal, completion: @escaping (Meal?, RequestError?) -> Void ) -> Void {
+func loadHandler(completion: @escaping ([Meal]?, RequestError?) -> Void ) -> Void {
+```
+
+### create and execute insert query on post
+
+1.  inside the storehandler connection.connect() else block create an insert query
+```
 else {
 // Build and execute your query here.
-}
+let insertQuery = = Insert(into: self.meals, values: [meal.name, String(describing: meal.photo), meal.rating])
 }
 ```
-above `mealStore[meal.name] = meal`
+4. execute your query:
+```
+self.connection.execute(query: insertQuery) { result in
+//respond to the result here
+}
+```
+5. have server respond to the client with the inserted meal to indicate success
+```
+self.connection.execute(query: insertQuery) { result in
+//respond to the result here
+}
+completion(meal, nil)
+```
+6. your storehandler function should now look as follows:
+```
+func storeHandler(meal: Meal, completion: @escaping (Meal?, RequestError?) -> Void ) -> Void {
+    connection.connect() { error in
+        if error != nil {return}
+        else {
+            let insertQuery = Insert(into: meals, values: [meal.name, String(describing: meal.photo), meal.rating])
+            connection.execute(query: insertQuery) { result in
+                //respond to the result here
+                }
+            completion(meal, nil)
+            }
+        }
+    }
+```
+Now when you create a meal in the app the server will make an insert call to the postgreSQL database.
+Verify this by adding a meal in your foodtracker app.
+accessing your database through:
+`psql FoodDatabase`
+and calling
+`TABLE meals;`
+This should rpoduce a table with the names, encoded photo strings and rating in a table.
 
-3. make function escape since they can return early
-
-### create and execute select query on get
-
+### create and execute select query on get call
+1. create a temporary mealstore at the top of your loadHander function
 ```
 func loadHandler(completion: @escaping ([Meal]?, RequestError?) -> Void ) -> Void {
-print("entered loadhandler")
 var tempMealStore: [String: Meal] = [:]
-connection.connect() { error in
-if let error = error {
-print("Error is \(error)")
-return
-}
+```
+2. inside the loadhandler connection.connect() else block create a query
+```
 else {
-let query = Select(from :meals)
-connection.execute(query: query) { queryResult in
-if let resultSet = queryResult.asResultSet {
+    // Build and execute your query here.
+    let query = Select(from :meals)
+    }
+```
+This will return everything from your created "meals" table.
+
+3. execute your query
+```
+else {
+    // Build and execute your query here.
+    let query = Select(from :meals)
+    connection.execute(query: query) { queryResult in
+        //handle your result here
+    }
+}
+```
+
+4. iterate through the returned rows
+```
+else {
+    // Build and execute your query here.
+    let selectQuery = Select(from :meals)
+    connection.execute(query: selectQuery) { queryResult in
+        //handle your result here
+        if let resultSet = queryResult.asResultSet {
+            for row in resultSet.rows {
+            //process rows
+    }
+}
+```
+5. create a meal object from the table and add it to your temporary mealstore
+```
 for row in resultSet.rows {
-guard let name = row[0], let nameString = name as? String else{return}
-guard let photo = row[1], let photoString = photo as? String   else{return}
-var photoArray = [String]()
-photoArray.append(photoString)
-guard let photoData = try? JSONSerialization.data(withJSONObject: photoArray, options: []) else {return}
-guard let rating = row[2], let ratingInt = Int(String(describing: rating)) else{return}
-let currentMeal = Meal(name: nameString, photo: photoData, rating: ratingInt)
-tempMealStore[nameString] = currentMeal
+    //process rows
+    guard let name = row[0], let nameString = name as? String else{return}
+    guard let photo = row[1], let photoString = photo as? String   else{return}
+    guard let photoData = photoString.data(using: .utf8) else {return}
+    guard let rating = row[2], let ratingInt = Int(String(describing: rating)) else{return}
+    let currentMeal = Meal(name: nameString, photo: photoData, rating: ratingInt)
+    tempMealStore[nameString] = currentMeal
 }
-}
-}
-}
+```
+For this tutorial we will not be storing the photo data so instead we will just store a string description of the photo.
+
+6. at the end of loadHandler Replace your old mealstore with your tempMealStore and return it
+```
+self.mealStore = tempMealStore
+let returnMeals: [Meal] = self.mealStore.map({ $0.value })
+completion(returnMeals, nil)
+```
+
+your loadhander function should now look as follows:
+```
+func loadHandler(completion: @escaping ([Meal]?, RequestError?) -> Void ) -> Void {
+    var tempMealStore: [String: Meal] = [:]
+    connection.connect() { error in
+    if error != nil {return}
+    else {
+        let selectQuery = Select(from :meals)
+        connection.execute(query: selectQuery) { queryResult in
+        if let resultSet = queryResult.asResultSet {
+            for row in resultSet.rows {
+                guard let name = row[0], let nameString = name as? String else{return}
+                guard let photo = row[1], let photoString = photo as? String   else{return}
+                guard let photoData = photoString.data(using: .utf8) else {return}
+                guard let rating = row[2], let ratingInt = Int(String(describing: rating)) else{return}
+                let currentMeal = Meal(name: nameString, photo: photoData, rating: ratingInt)
+                tempMealStore[nameString] = currentMeal
+                }
+            }
+        }
+    }
 }
 self.mealStore = tempMealStore
 let returnMeals: [Meal] = self.mealStore.map({ $0.value })
@@ -175,32 +275,8 @@ completion(returnMeals, nil)
 }
 ```
 
-### create and execute update query on post
+Now when you preform a get call to your server it will lookup and return the values from your database.
+verify this by going to:[http://localhost:8080/meals](http://localhost:8080/meals) Where you should see your meals.
+You can stop your server running but this data will now persist since it is within the database!
 
-3. add a query to update existing meals inside the else statement made above:
-```
-let photoString = String(describing: meal.photo)
-let updateQuery = Update(meals, set: [(meals.name, meal.name), (meals.photo, photoString),(meals.rating, meal.rating)]).where(meals.name == meal.name)
-```
-4. execute your query:
-```
-connection.execute(query: updateQuery) { result in
-//respond to the result here
-}
-```
-5. if not in database insert the query:
-```
-connection.execute(query: updateQuery) { result in
-let insertQuery = Insert(into: self.meals, values: [meal.name, photoString, meal.rating])
-self.connection.execute(query: insertQuery) { result in
-if(!result.success){
-completion(nil, .unprocessableEntity)
-return
-}
-}
-}
-completion(meal, nil)
-
-```
-now your server will post new meals to your database and when you go a get to your server it will return the table from your database
 
