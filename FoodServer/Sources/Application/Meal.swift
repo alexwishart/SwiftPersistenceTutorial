@@ -7,6 +7,15 @@
 //
 
 import Foundation
+import SwiftKuery
+import SwiftKueryPostgreSQL
+
+public class Meals : Table {
+    let tableName = "meals"
+    let name = Column("name")
+    let photo = Column("photo")
+    let rating = Column("rating")
+}
 
 struct Meal: Codable {
     
