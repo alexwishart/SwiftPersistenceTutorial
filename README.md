@@ -147,20 +147,20 @@ let insertQuery = = Insert(into: self.meals, values: [meal.name, String(describi
 ```
 4. execute your query:
 ```
-self.connection.execute(query: insertQuery) { result in
+connection.execute(query: insertQuery) { result in
 //respond to the result here
 }
 ```
 5. have server respond to the client with the inserted meal to indicate success
 ```
-self.connection.execute(query: insertQuery) { result in
+connection.execute(query: insertQuery) { result in
 //respond to the result here
 }
 completion(meal, nil)
 ```
 6. your storehandler function should now look as follows:
 ```
-func storeHandler(meal: Meal, completion: @escaping (Meal?, RequestError?) -> Void ) -> Void {
+func storeHandler(meal: Meal, completion: (Meal?, RequestError?) -> Void ) -> Void {
     connection.connect() { error in
         if error != nil {return}
         else {
@@ -184,7 +184,7 @@ This should rpoduce a table with the names, encoded photo strings and rating in 
 ### create and execute select query on get call
 1. create a temporary mealstore at the top of your loadHander function
 ```
-func loadHandler(completion: @escaping ([Meal]?, RequestError?) -> Void ) -> Void {
+func loadHandler(completion: ([Meal]?, RequestError?) -> Void ) -> Void {
 var tempMealStore: [String: Meal] = [:]
 ```
 2. inside the loadhandler connection.connect() else block create a query
@@ -243,7 +243,7 @@ completion(returnMeals, nil)
 
 your loadhander function should now look as follows:
 ```
-func loadHandler(completion: @escaping ([Meal]?, RequestError?) -> Void ) -> Void {
+func loadHandler(completion: ([Meal]?, RequestError?) -> Void ) -> Void {
     var tempMealStore: [String: Meal] = [:]
     connection.connect() { error in
     if error != nil {return}
