@@ -34,11 +34,13 @@ public class App {
     }
     
     func storeHandler(meal: Meal, completion: @escaping (Meal?, RequestError?) -> Void ) -> Void {
+        let photoHex = meal.photo.map{ String(format: "%02hhx", $0) }.joined()
         connection.connect() { error in
             if error != nil {return}
             else {
-                let insertQuery = Insert(into: meals, values: [meal.name, String(describing: meal.photo), meal.rating])
+                let insertQuery = Insert(into: meals, values: [meal.name, photoHex, meal.rating])
                 connection.execute(query: insertQuery) { result in
+                    print("insert result: \(result.success)")
                     //respond to the result here
                     }
                 completion(meal, nil)
@@ -56,8 +58,7 @@ public class App {
                     if let resultSet = queryResult.asResultSet {
                         for row in resultSet.rows {
                             guard let name = row[0], let nameString = name as? String else{return}
-                            guard let photo = row[1], let photoString = photo as? String   else{return}
-                            guard let photoData = photoString.data(using: .utf8) else {return}
+                            guard let photo = row[1], let photoData = photo as? Data else {return}
                             guard let rating = row[2], let ratingInt = Int(String(describing: rating)) else{return}
                             let currentMeal = Meal(name: nameString, photo: photoData, rating: ratingInt)
                             tempMealStore[nameString] = currentMeal
