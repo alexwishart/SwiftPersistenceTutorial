@@ -136,12 +136,6 @@ connection.connect() { error in
 ```
 on the lines below "func loadHandler(...{"  and "func storeHandler(...{"
 
-3. make loadHandler and storeHandler functions escape since they can return early
-```
-func storeHandler(meal: Meal, completion: @escaping (Meal?, RequestError?) -> Void ) -> Void {
-func loadHandler(completion: @escaping ([Meal]?, RequestError?) -> Void ) -> Void {
-```
-
 ### create and execute insert query on post
 
 1.  inside the storehandler connection.connect() else block create an insert query

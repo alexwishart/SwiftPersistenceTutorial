@@ -33,7 +33,7 @@ public class App {
         router.get("/meals", handler: loadHandler)
     }
     
-    func storeHandler(meal: Meal, completion: @escaping (Meal?, RequestError?) -> Void ) -> Void {
+    func storeHandler(meal: Meal, completion: (Meal?, RequestError?) -> Void ) -> Void {
         let photoHex = meal.photo.map{ String(format: "%02hhx", $0) }.joined()
         connection.connect() { error in
             if error != nil {return}
@@ -48,7 +48,7 @@ public class App {
         }
     }
     
-    func loadHandler(completion: @escaping ([Meal]?, RequestError?) -> Void ) -> Void {
+    func loadHandler(completion: ([Meal]?, RequestError?) -> Void ) -> Void {
         var tempMealStore: [String: Meal] = [:]
         connection.connect() { error in
             if error != nil {return}
