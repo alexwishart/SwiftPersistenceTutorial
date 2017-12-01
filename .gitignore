@@ -9,6 +9,5 @@
 .build-ubuntu/*
 FoodTrackerBackend/FoodServer/FoodServer.xcodeproj/*
 FoodTrackerBackend/Package.resolved
-FoodTrackerBackend/iOS/FoodTracker/FoodTracker.xcodeproj/*
 FoodTrackerBackend/iOS/FoodTracker/FoodTracker.xcworkspace/*
 FoodTrackerBackend/iOS/FoodTracker/Pods
