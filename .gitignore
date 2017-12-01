@@ -7,9 +7,8 @@
 ./config/localdev-config.json
 .build/*
 .build-ubuntu/*
-*.xcodeproj/*
-Package.resolved
-.DS_Store
-iOS/FoodTracker/FoodTracker.xcodeproj/*
-iOS/FoodTracker/FoodTracker.xcworkspace/*
-iOS/FoodTracker/Pods
+FoodTrackerBackend/FoodServer/FoodServer.xcodeproj/*
+FoodTrackerBackend/Package.resolved
+FoodTrackerBackend/iOS/FoodTracker/FoodTracker.xcodeproj/*
+FoodTrackerBackend/iOS/FoodTracker/FoodTracker.xcworkspace/*
+FoodTrackerBackend/iOS/FoodTracker/Pods
