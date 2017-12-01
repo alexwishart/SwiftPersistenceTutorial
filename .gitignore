@@ -11,3 +11,7 @@ FoodTrackerBackend/FoodServer/FoodServer.xcodeproj/*
 FoodTrackerBackend/Package.resolved
 FoodTrackerBackend/iOS/FoodTracker/FoodTracker.xcworkspace/*
 FoodTrackerBackend/iOS/FoodTracker/Pods
+FoodTrackerBackend/iOS/FoodTracker/Podfile.lock
+FoodTrackerBackend/iOS/FoodTracker/FoodTracker.xcodeproj/xcuserdata/
+
+
