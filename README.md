@@ -177,7 +177,7 @@ connection.connect() { error in
 ```swift
 else {
     // Build and execute your query here.
-    let insertQuery = = Insert(into: self.meals, values: [meal.name, String(describing: meal.photo), meal.rating])
+    let insertQuery = Insert(into: self.meals, values: [meal.name, String(describing: meal.photo), meal.rating])
     self.connection.execute(query: insertQuery) { result in
         //respond to the result here
     }
