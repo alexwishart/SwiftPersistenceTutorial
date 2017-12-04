@@ -294,7 +294,6 @@ In this example we have parsed the cells from each row in the database to be the
 6. At the end of loadHandler, replace your old mealstore with your newly created `tempMealStore` and return this as your response to the `GET` request.
 ```swift
         ...
-        tempMealStore[nameString] = currentMeal
     }
     self.mealStore = tempMealStore
     let returnMeals: [Meal] = self.mealStore.map({ $0.value })
