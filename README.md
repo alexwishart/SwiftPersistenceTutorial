@@ -40,7 +40,7 @@ git checkout completedFoodBackend
 cd FoodTrackerBackend/iOS/FoodTracker
 pod install
 ```
-6. Open the FoodTracker Application in Xcode
+6. Open the FoodTracker application in Xcode
 ```
 open FoodTracker.xcworkspace/
 ```
@@ -84,7 +84,7 @@ At this point it will be empty since we have not inserted anything.
 6. Type `\q` and then press ENTER to quit `psql`.
 
 ### Adding Swift-Kuery dependencies to your server
-[Swift-Kuery](https://github.com/IBM-Swift/Swift-Kuery) is a database abstraction layer, it works alongside a specific database library, such as [Swift-Kuery-PostgreSQL](https://github.com/IBM-Swift/Swift-Kuery-PostgreSQL), to allow a user to easily query a SQL database in Swift. These two libraries are added to our Package.swift file, so the Server can access them.
+[Swift-Kuery](https://github.com/IBM-Swift/Swift-Kuery) is a database abstraction layer, it works alongside a specific database library, such as [Swift-Kuery-PostgreSQL](https://github.com/IBM-Swift/Swift-Kuery-PostgreSQL), to allow a user to easily query a SQL database in Swift. These two libraries are added to our `Package.swift` file, so the Server can access them.
 
 1. Open a new terminal window and go into your server `Package.swift` file
 ```
@@ -119,7 +119,7 @@ Now when you press play, Xcode will start your FoodTracker server listening on p
 ### Create a Meals Table class
 To work with the meals table in the database, Swift-Kuery requires a matching class. We will now create a `Meals` class to match the meals table we created earlier in PostgreSQL.
 
-1. In Xocde, open your `Sources > Application > Meal.swift` file.
+1. In Xcode, open your `Sources > Application > Meal.swift` file.
 2. Add SwiftKuery and SwiftKueryPostgreSQL to the import statements:
 ```swift
 import SwiftKuery
@@ -147,7 +147,7 @@ let meals = Meals()
 below the line `let cloudEnv = CloudEnv()`
 
 ### Connecting to the PostgreSQL database
-We will now connect to our server to the PostgreSQL database. This will allow us to send and receive information using queries.
+We will now connect our server to the PostgreSQL database. This will allow us to send and receive information using queries.
 
 1. Staying within your `Application.swift` file set up a connection by inserting:
 ```swift
